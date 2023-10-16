@@ -18,8 +18,8 @@
       type="text"
       class="form-control"
       placeholder="Cerca un film"
-      v-model.trim="store.movieToSearch"
-      @keyup.enter="$emit('movieSearch')">
+      v-model.trim="store.nameToSearch"
+      @keyup.enter="$emit('movieSearch'), $emit('seriesSearch')">
 
     <button class="btn ms-3 me-3" @click="$emit('movieSearch')">Cerca</button>
   </div>
@@ -37,5 +37,4 @@
       background-color: $bg-btn;
     }
   }
-
 </style>

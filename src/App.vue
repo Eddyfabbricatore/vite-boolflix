@@ -3,7 +3,8 @@
   import { store } from './data/store';
   import Logo from './components/Logo.vue';
   import SearchBar from './components/SearchBar.vue';
-  import FilmsContainer from './components/FilmsContainer.vue';
+  import MoviesContainer from './components/MoviesContainer.vue';
+  import SeriesContainer from './components/SeriesContainer.vue';
 
   export default {
     name: 'App',
@@ -11,7 +12,8 @@
     components:{
       Logo,
       SearchBar,
-      FilmsContainer
+      MoviesContainer,
+      SeriesContainer
     },
 
     data(){
@@ -22,15 +24,33 @@
 
     methods:{
       getApiMovie(){
+        store.isSearch = true;
+
         axios.get(store.apiMovieUrl, {
           params:{
             api_key: store.apiKey,
-            query: store.movieToSearch
+            query: store.nameToSearch
           }
         })
         .then(res => {
           store.moviesList = res.data.results;
-          console.log(res.data.results);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+      },
+
+      getApiSeries(){
+        store.isSearch = true;
+
+        axios.get(store.apiSeriesUrl, {
+          params:{
+            api_key: store.apiKey,
+            query: store.nameToSearch
+          }
+        })
+        .then(res => {
+          store.seriesList = res.data.results;
         })
         .catch(error => {
           console.log(error);
@@ -44,11 +64,13 @@
   <header class="d-flex justify-content-between align-items-center">
     <Logo />
 
-    <SearchBar @movieSearch="getApiMovie" />
+    <SearchBar @movieSearch="(getApiMovie)" @seriesSearch="(getApiSeries)" />
   </header>
 
   <main>
-    <FilmsContainer />
+    <MoviesContainer />
+
+    <SeriesContainer />
   </main>
 </template>
 
