@@ -1,85 +1,58 @@
 <script>
   import axios from 'axios';
   import { store } from './data/store';
-  import Logo from './components/Logo.vue';
-  import SearchBar from './components/SearchBar.vue';
-  import MoviesContainer from './components/MoviesContainer.vue';
-  import SeriesContainer from './components/SeriesContainer.vue';
+  import Header from './components/Header.vue';
+  import Main from './components/Main.vue';
 
   export default {
     name: 'App',
 
-    components:{
-      Logo,
-      SearchBar,
-      MoviesContainer,
-      SeriesContainer
-    },
-
     data(){
       return{
-        store
+        store,
+        message: 'Effettua una ricerca'
       }
     },
 
-    methods:{
-      getApiMovie(){
-        store.isSearch = true;
+    components:{
+      Header,
+      Main
+    },
 
-        axios.get(store.apiMovieUrl, {
-          params:{
-            api_key: store.apiKey,
-            query: store.nameToSearch
-          }
+    methods:{
+      getApi(type){
+        axios.get(store.apiUrl + type, {
+          params: store.apiParams
         })
         .then(res => {
-          store.moviesList = res.data.results;
+          store[type] = res.data.results;
+
+          if(!store.movie.length)  this.message = 'Nessun film o serie tv trovato';
         })
-        .catch(error => {
-          console.log(error);
+        .catch(err =>{
+          console.log(err);
         })
       },
 
-      getApiSeries(){
-        store.isSearch = true;
-
-        axios.get(store.apiSeriesUrl, {
-          params:{
-            api_key: store.apiKey,
-            query: store.nameToSearch
-          }
-        })
-        .then(res => {
-          store.seriesList = res.data.results;
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      startSearch(){
+        this.getApi('movie');
+        this.getApi('tv');
       }
     }
   }
 </script>
 
 <template>
-  <header class="d-flex justify-content-between align-items-center">
-    <Logo />
+  <Header @startSearch="startSearch" />
 
-    <SearchBar @movieSearch="(getApiMovie)" @seriesSearch="(getApiSeries)" />
-  </header>
+  <Main title="Film" type="movie" v-if="store.movie.length > 0" />
+  <Main title="Serie Tv" type="tv" v-if="store.tv.length > 0" />
 
-  <main>
-    <MoviesContainer />
-
-    <SeriesContainer />
-  </main>
+  <div class="container my-3" v-else>
+    <h2 class="m-0">{{ message }}</h2>
+  </div>
 </template>
 
 <style lang="scss">
   @use './scss/main.scss';
-
-  header{
-    height: 80px;
-    background-color: #000;
-  }
-
 </style>
