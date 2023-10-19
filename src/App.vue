@@ -9,8 +9,7 @@
 
     data(){
       return{
-        store,
-        message: 'Effettua una ricerca'
+        store
       }
     },
 
@@ -20,8 +19,10 @@
     },
 
     methods:{
-      getApi(type){
-        axios.get(store.apiUrl + type, {
+      getApi(type, isPopular = false){
+        const apiUrl = !isPopular ? store.apiUrl + type : 'https://api.themoviedb.org/3/movie/popular'
+
+        axios.get(apiUrl, {
           params: store.apiParams
         })
         .then(res => {
@@ -35,9 +36,18 @@
       },
 
       startSearch(){
-        this.getApi('movie');
-        this.getApi('tv');
+        store.movie = [];
+        store.tv = [];
+
+        if(store.type === ''){
+          this.getApi('movie');
+          this.getApi('tv');
+        }else this.getApi(store.type);
       }
+    },
+
+    mounted(){
+      this.getApi('movie', true);
     }
   }
 </script>

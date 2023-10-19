@@ -26,7 +26,7 @@
         v-model.trim="store.apiParams.query"
         @keyup.enter="$emit('startSearch')">
 
-      <select class="form-select ms-3">
+      <select class="form-select ms-3" v-model="store.type">
         <option value="">Tutti</option>
         <option value="movie">Film</option>
         <option value="tv">Serie Tv</option>

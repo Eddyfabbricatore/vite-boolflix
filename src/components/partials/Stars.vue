@@ -15,7 +15,7 @@
 </script>
 
 <template>
-  <div class="stars-container">
+  <div class="stars-container m-0 mb-3">
     <i class="fa-star fa-regular"></i>
     <i class="fa-star fa-regular"></i>
     <i class="fa-star fa-regular"></i>

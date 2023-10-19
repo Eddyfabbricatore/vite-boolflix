@@ -6,7 +6,7 @@
 
     data(){
       return{
-        flags: ['it', 'en',]
+        flags: ['it', 'en']
       }
     },
 
@@ -27,30 +27,31 @@
 </script>
 
 <template>
-  <div class="card mb-3">
-    <div class="card-image h-100">
-      <img :src="`https://image.tmdb.org/t/p/w342/${item.poster_path}`" v-if="item.poster_path">
+  <div class="card">
+    <div class="inner h-100">
+      <div class="front h-100">
+        <img class="poster" :src="`https://image.tmdb.org/t/p/w342/${item.poster_path}`" v-if="item.poster_path">
 
-      <div v-else>
-        <h4 class="card-title m-0">{{ item.title || item.name }}</h4>
+        <div v-else>
+          <h4 class="text-center m-0">{{ item.title || item.name }}</h4>
 
-        <img src="../../assets/img/no-image-avaible.jpg">
+          <img class="placeholder" src="../../assets/img/no-image-avaible.jpg">
+        </div>
       </div>
-    </div>
 
-    <div class="card-body h-100">
-      <div class="info">
-        <h4 class="card-title m-0 mb-3">{{ item.title || item.name }}</h4>
-        <h5 class="card-title m-0 mb-3">{{ item.original_title || item.original_name }}</h5>
+      <div class="back d-flex flex-column h-100">
+        <h4 class="m-0 mb-3">{{ item.title || item.name }}</h4>
+        <h5 class="m-0 mb-3">{{ item.original_title || item.original_name }}</h5>
 
-        <p class="flag card-text d-flex align-items-center m-0 mb-3" v-if="flags.includes(item.original_language)"><img :src="getImagePath(item.original_language)"></p>
-        <p class="card-text d-flex m-0 mb-3" v-else>{{ item.original_language }}</p> 
+        <div class="flag m-0 mb-3">
+          <img :src="getImagePath(item.original_language)" v-if="flags.includes(item.original_language)">
+
+          <p class="m-0" v-else>Lingua: {{ item.original_language }}</p> 
+        </div>
         
         <Stars :vote="item.vote_average" />
-      </div>
-
-      <div class="overview">
-        <p class="m-0">{{ item.overview }}</p>
+        
+        <p class="overview m-0">{{ item.overview }}</p>
       </div>
     </div>
   </div>
@@ -58,37 +59,47 @@
 
 <style lang="scss" scoped>
   @use '../../scss/variables.scss' as *;
+
   .card{
-    position: relative;
     border: none;
+    padding: 10px;
     height: 500px;
+    color: $text-color;
     background-color: $bg-body;
 
-    .card-body{
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      color: #cccbce;
+    .inner{
+      position: relative;
+      overflow: hidden;
+      background-color: #000;
 
-      .info{
-        height: 225px;
+      &:hover{
+        .front img{
+          transform: scale(1.1);
+          opacity: .3;
+        }
 
-        .flag{
-          width: 25px;
-          height: 20px;
+        .back{
+          top: 0;
         }
       }
 
-      .overview{
-        height: calc(100% - 225px);
-        overflow: auto;
+      .front img{
+        transition: all .5s;
       }
-    }
 
-    &:hover{
-      .card-body{
-        display: block;
+      .back{
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 10px;
+
+        .overview{
+          overflow: auto;
+        }
+      }
+
+      .flag img{
+        width: 30px;
       }
     }
   }
